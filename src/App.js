@@ -1,26 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {PropTypes} from 'react';
 import './App.css';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import Map , {GoogleApiWrapper} from 'google-maps-react'
+import Components from './Components'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export class App extends React.Component {
+  render() {
+    return (
+      <Router>
+        <header> Hello World </header>
+        {/* <Map google={this.props.google} /> */}
+        <Components.Menu />
+        <div className="App">
+          <Route exact path="/" component={Components.Home} />
+          <Route exact path="/map" component={Components.Maps}/>
+        </div>
+      </Router>
+    );
+  }
 }
 
-export default App;
+// const map = () => (
+//   <div>
+//     Map
+//     {/* <Map google={this.props.google} /> */}
+//   </div>
+// )
+
+// export default GoogleApiWrapper({
+//   apiKey: API_KEY
+// })(App)
+export default App
