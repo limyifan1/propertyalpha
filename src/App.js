@@ -11,6 +11,11 @@ export class App extends React.Component {
         <div className="App">
           <Route exact path="/" component={Components.Home} />
           <Route exact path="/listing" component={Components.Listing}/>
+          <body>
+          <script src="/__/firebase/7.10.0/firebase-app.js"></script>
+          <script src="/__/firebase/7.10.0/firebase-analytics.js"></script>
+          <script src="/__/firebase/init.js"></script>
+          </body>
         </div>
       </Router>
     );

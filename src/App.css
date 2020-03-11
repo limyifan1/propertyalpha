@@ -30,10 +30,12 @@
 }
 
 .pin1 {
-  position: absolute;
+  position: relative;
   border-radius: 50% 50% 50% 0;
   border: 10px solid blue;
   width: 20px;
   height: 20px;
   transform: rotate(-45deg);
+  right: 10px;
+  bottom: 20px;
 }
