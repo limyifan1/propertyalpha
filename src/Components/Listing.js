@@ -2,8 +2,6 @@ import React from 'react';
 // import Map, {GoogleApiWrapper, Marker, InfoWindow} from 'google-maps-react'
 import '../App.css';
 import Sidebar from './Sidebar'
-import Papa from 'papaparse';
-import file from '../listings_cropped.csv'
 import Component from '../Components'
 
 export class Listing extends React.Component {
@@ -11,40 +9,12 @@ export class Listing extends React.Component {
     super(props);
 
     this.state = {
-      markers: {},
-      showingInfoWindow: false,
-      activeMarker: {},
-      selectedPlace: {},
       data: []
     };
-
-    this.getData = this.getData.bind(this);
   }
 
-  componentWillMount() {
-    this.getCsvData();
-  }
-
-  fetchCsv() {
-      return fetch(file).then(function (response) {
-          let reader = response.body.getReader();
-          let decoder = new TextDecoder('utf-8');
-          return reader.read().then(function (result) {
-              return decoder.decode(result.value);
-          });
-      });
-  }
-
-  async getCsvData() {
-    let csvData = await this.fetchCsv();
-    Papa.parse(csvData, {
-      header: true, 
-      complete: this.getData
-    });
-  }
-
-  getData(result) {
-    this.setState({data: result.data});
+  getData(val){
+    this.setState({data:val})
   }
 
   render() {
@@ -54,7 +24,7 @@ export class Listing extends React.Component {
           <Sidebar data={this.state}/>
         </div>
         <div>
-          <Component.Maps data={this.state.data}/>
+          <Component.Maps sendData={this.getData.bind(this)}/>
         </div>
       </div>
     );

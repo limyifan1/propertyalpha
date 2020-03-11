@@ -6,12 +6,20 @@
   right: 0;
 }
 
+.info {
+  border: 1px solid grey;
+  width: 100px;
+  font-size: large;
+}
+
 .item {
   height: 300px;
   display: flex;
   flex-direction: row;
+  width: 45%;
   border-bottom: 1px solid #eeeeee;
-  padding: 10px;
+  padding-top: 10px;
+  margin: 0 2% 0 2%;
   text-decoration: none;
 }
 
@@ -29,12 +37,3 @@
   height: 20px;
   transform: rotate(-45deg);
 }
-/* 
-.pin1::after {
-  position: absolute;
-  content: '';
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: blue;
-} */

@@ -2,6 +2,8 @@ import React, {PropTypes} from 'react';
 import '../App.css';
 import GoogleMap from 'google-map-react';
 import Marker from './Marker'
+import Papa from 'papaparse';
+import file from '../listings_cropped.csv'
 
 const API_KEY = `${process.env.REACT_APP_GKEY}`
 
@@ -24,32 +26,77 @@ const apiIsLoaded = (map, maps, places) => {
 export class Maps extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
-        data: []
+      data: []
     };
+
+    this.getData = this.getData.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return true
   }
 
+  componentWillMount() {
+    this.getCsvData();
+  }
 
-  _onChildMouseEnter = function(){
-    
+  fetchCsv() {
+      return fetch(file).then(function (response) {
+          let reader = response.body.getReader();
+          let decoder = new TextDecoder('utf-8');
+          return reader.read().then(function (result) {
+              return decoder.decode(result.value);
+          });
+      });
+  }
+
+  async getCsvData() {
+    let csvData = await this.fetchCsv();
+    Papa.parse(csvData, {
+      header: true, 
+      complete: this.getData
+    });
+  }
+
+  getData(result) {
+    this.setState({data: result.data});
+    this.props.sendData(result.data)
+  }
+
+  _onChildMouseEnter = function(hoverKey){
+    let index = parseInt(hoverKey)
+    if (this.state.data.length!==0){
+      let data = this.state.data
+      data[index].show = true
+      this.setState({data:data})
+    }
+  }
+
+  _onChildMouseLeave = function(hoverKey){
+    let index = parseInt(hoverKey)
+    if (this.state.data.length!==0){
+      let data = this.state.data
+      data[index].show = false
+      this.setState({data:data})
+    }
   }
 
   render() {
     let renderMarkers
-    if (this.props.data.length!==0){
-      renderMarkers = this.props.data.map(place =>{
+    let count = -1
+    if (this.state.data.length!==0){
+      renderMarkers = this.state.data.map(place =>{
+        count += 1
         return <Marker 
+                  key={count}
                   text={place.name}
                   pic={place.picture_url}
                   street={place.street}
                   price={place.price}
                   lat = {place.latitude}
                   lng = {place.longitude}
+                  show = {place.show}
                 />
       })
     }
@@ -60,8 +107,9 @@ export class Maps extends React.Component {
           bootstrapURLKeys={{ key: API_KEY}}
           defaultCenter={[47.63628904, -122.3710252]}
           defaultZoom={9}
-          onChildMouseEnter={this._onChildMouseEnter}
-          onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps, this.props)}
+          onChildMouseEnter={this._onChildMouseEnter.bind(this)}
+          onChildMouseLeave={this._onChildMouseLeave.bind(this)}
+          onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps, this.state)}
           >
             {renderMarkers}
           </GoogleMap>

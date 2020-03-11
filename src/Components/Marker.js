@@ -5,7 +5,9 @@ import '../App.css';
 const InfoWindow = () => {
   return (
     <div>
-      Hello there
+      <div class="card" style={{"width":"100px", bottom:"15px"}}>
+        Hello there
+      </div>
     </div>
   )
 }
@@ -26,8 +28,10 @@ export class Marker extends React.Component {
   render() {
     return (
         <div>
-          <InfoWindow />
           <div class="pin1"></div>
+          <div>
+            {this.props.show && <InfoWindow />}
+          </div>
         </div>
     );
   }
