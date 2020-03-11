@@ -1,4 +1,4 @@
-import React, {PropTypes} from 'react';
+import React from 'react';
 import '../App.css';
 import Item from './Item'
 
@@ -13,7 +13,7 @@ export class Sidebar extends React.Component {
 
   render() {
     let result;
-    if (this.props.data.data.length != 0){
+    if (this.props.data.data.length !== 0){
       result = this.props.data.data.map(data => {
         return (
           <div>

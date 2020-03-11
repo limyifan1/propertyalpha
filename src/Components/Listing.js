@@ -1,12 +1,10 @@
-import React, {PropTypes} from 'react';
+import React from 'react';
 // import Map, {GoogleApiWrapper, Marker, InfoWindow} from 'google-maps-react'
 import '../App.css';
 import Sidebar from './Sidebar'
 import Papa from 'papaparse';
 import file from '../listings_cropped.csv'
 import Component from '../Components'
-
-const API_KEY = `${process.env.REACT_APP_GKEY}`
 
 export class Listing extends React.Component {
   constructor(props) {
