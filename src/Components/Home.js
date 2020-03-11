@@ -28,7 +28,7 @@ export class Home extends React.Component {
           </br>
           <div>
             HOMEEEE
-            {addData()}
+            {/* {addData()} */}
           </div>
         </div>
       );
