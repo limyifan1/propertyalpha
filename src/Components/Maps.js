@@ -9,32 +9,28 @@ const API_KEY = `${process.env.REACT_APP_GKEY}`
 
 const getMapBounds = (map, maps, places) => {
   const bounds = new maps.LatLngBounds();
-
-  if (places.data.length!==0) {
+  if (places !== undefined && places.data.length!==0) {
     places.data.forEach(element => {
       bounds.extend({lat: parseFloat(element.latitude), lng:parseFloat(element.longitude)})
     })
+    return bounds
   }
-  return bounds;
 };
 
 const apiIsLoaded = (map, maps, places) => {
   const bounds = getMapBounds(map, maps, places);
-  map.fitBounds(bounds);
+  if (bounds){
+    map.fitBounds(bounds);
+  }
 };
 
 export class Maps extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: []
+      data: [],
     };
-
     this.getData = this.getData.bind(this);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return true
   }
 
   componentWillMount() {
@@ -100,20 +96,23 @@ export class Maps extends React.Component {
                 />
       })
     }
-  
+    
     return (
         <div className="map-container">
+          {this.state.data.length!==0 ?
           <GoogleMap
           bootstrapURLKeys={{ key: API_KEY}}
           defaultCenter={[47.63628904, -122.3710252]}
           defaultZoom={9}
           onChildMouseEnter={this._onChildMouseEnter.bind(this)}
           onChildMouseLeave={this._onChildMouseLeave.bind(this)}
+          yesIWantToUseGoogleMapApiInternals
           onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps, this.state)}
           >
             {renderMarkers}
           </GoogleMap>
-
+          : null
+        }
         </div>
     );
   }
