@@ -5,6 +5,8 @@ import Sidebar from './Sidebar'
 import Item from './Item'
 import Maps from './Maps'
 import Marker from './Marker'
+import Create from './Create'
+import SearchBox from './SearchBox'
 import db from './Firestore'
 
-export default {Home, Menu, Listing, Sidebar, Item, Maps, Marker, db}
+export default {Home, Menu, Listing, Sidebar, Item, Maps, Marker, Create, SearchBox, db}
