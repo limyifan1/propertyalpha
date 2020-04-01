@@ -6,6 +6,15 @@
   right: 0;
 }
 
+.search-container {
+  top: 56px;
+  width: 60%;
+  height: calc(100% - 58px);
+  position: fixed;
+  right: 20%;
+}
+
+
 .info {
   border: 1px solid grey;
   width: 100px;

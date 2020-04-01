@@ -35,9 +35,17 @@ export class SearchBox extends React.Component {
 
   componentDidMount() {
     const {
-      maps: { places },
+      maps,
+      map
     } = this.props;
-      this.searchBox = new places.SearchBox(this.searchInput.current);
+    var options = {
+      componentRestrictions: {country: 'sg'}
+    };
+    if (map && maps.places){
+      this.searchBox = new maps.places.Autocomplete(this.searchInput.current, options);
+      map.controls[maps.ControlPosition.TOP_LEFT].push(this.searchBox.current);
+      this.searchBox.addListener('place_changed', this.onPlacesChanged);
+    }
   }
 
   componentWillUnmount() {
@@ -47,6 +55,11 @@ export class SearchBox extends React.Component {
 
     event.clearInstanceListeners(this.searchBox);
   }
+
+  onPlacesChanged = () => {
+    console.log(this.searchBox.getPlace())
+  };
+
 
   render() {
     return (

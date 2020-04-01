@@ -1,16 +1,16 @@
 import React from 'react';
 import '../App.css';
-import db from './Firestore'
+import {db, storage, firebase} from './Firestore'
 import GoogleMap from 'google-map-react';
 import Component from '../Components'
 
 const API_KEY = `${process.env.REACT_APP_GKEY}`
 
-const addData = () => {
+const addData = (postal,street,price) => {
   db.collection("properties").add({
-    first: "Ada",
-    last: "Lovelace",
-    born: 1815
+    postal: postal,
+    street: street,
+    price: price
   })
   .then(function(docRef) {
       console.log("Document written with ID: ", docRef.id);
@@ -27,9 +27,14 @@ export class Create extends React.Component {
     super(props);
 
     this.state = {
-      data: []
+      postal: '',
+      street: '',
+      price: 0
     };
+    // this.handleSubmit = this.handleSubmit(this);
+    // this.handleChange = this.handleChange(this);
   }
+
   apiHasLoaded(map, maps){
     if (map && maps) {
       this.setState({
@@ -40,23 +45,81 @@ export class Create extends React.Component {
     }
   }
 
+  handleSubmit(event) {
+    // alert('A name was submitted: ' + this.state.value);
+  }
+
+  handleChange = (event) => {
+    const target = event.target;
+    const value = target.value;
+    const name = target.name;
+    this.setState({[name]: value});
+  }
+
   render({ apiReady, maps, map } = this.state) {
     return (
-      <div className="map-container">
-      <GoogleMap
-      bootstrapURLKeys={{ key: API_KEY, libraries:'places'}}
-      defaultCenter={[47.63628904, -122.3710252]}
-      defaultZoom={9}
-      yesIWantToUseGoogleMapApiInternals
-      onGoogleApiLoaded={({ map, maps }) => this.apiHasLoaded(map, maps)}
-      >
-        {apiReady && <Component.SearchBox
-          map={map}
-          maps={maps}
-        />}
-      </GoogleMap>
-    </div>
-);
+      <div class="container" style={{"padding-top":"70px"}}>
+        <h3>Create Property Listing</h3>
+        <div class="row">
+          <div class="col">
+            <div class="card shadow" style={{"width": "100%"}}>
+              <div class="card-body">
+                <h5 class="card-title">Upload Images</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <form>
+                  <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="customFile"></input>
+                    <label class="custom-file-label" for="customFile">Choose file</label>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-8">
+            <div class="card form shadow" style={{"width": "100%"}}>
+              <div class="card-body">
+                <h5 class="card-title">Property Details</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Please enter more details regarding your property listing. </h6>
+                <div class="form-group">
+                  <label for="postalcode">Postal Code</label>
+                  <input onChange={this.handleChange} value={this.state.postal} type="text" class="form-control" name="postal" placeholder="Enter Postal Code"></input>
+                  {/* <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> */}
+                </div>
+                <div class="form-group">
+                  <label for="street">Street Name</label>
+                  <input onChange={this.handleChange} value={this.state.street} type="text" class="form-control" name="street" placeholder="Enter Street Name"></input>
+                </div>
+                <div class="form-group">
+                  <label for="price">Price</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="basic-addon1">$</span>
+                    </div>
+                    <input onChange={this.handleChange} value={this.state.price} type="number" class="form-control" name="price" placeholder="Enter Price"></input>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    //   <div className="search-container">
+    //   <GoogleMap
+    //   bootstrapURLKeys={{ key: API_KEY, libraries:'places'}}
+    //   defaultCenter={[1.3521, 103.8198]}
+    //   defaultZoom={15}
+    //   yesIWantToUseGoogleMapApiInternals
+    //   onGoogleApiLoaded={({ map, maps }) => this.apiHasLoaded(map, maps)}
+    //   >
+    //     {apiReady && <Component.SearchBox
+    //       map={map}
+    //       maps={maps}
+    //     />}
+    //   </GoogleMap>
+    // </div>
+    );
   }
 }
 
