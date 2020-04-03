@@ -3,6 +3,9 @@ import '../App.css';
 import {db, storage} from './Firestore'
 import GoogleMap from 'google-map-react';
 import Component from '../Components'
+import {
+	withRouter
+} from 'react-router-dom';
 
 const API_KEY = `${process.env.REACT_APP_GKEY}`
 
@@ -18,11 +21,11 @@ const addData = (postal,street,price,description,url,latitude,longitude) => {
   })
   .then(function(docRef) {
       console.log("Document written with ID: ", docRef.id);
-      alert("Sent")
+      // alert("Sent")
   })
   .catch(function(error) {
       console.error("Error adding document: ", error);
-      alert("Failed")
+      // alert("Failed")
   });
 }
 
@@ -39,7 +42,7 @@ export class Create extends React.Component {
       imageFile: '',
       imageName: 'Upload Image',
       longitude: -122.3710252,
-      latitude: 47.63628904
+      latitude: 47.63628904,
     };
   }
 
@@ -53,8 +56,29 @@ export class Create extends React.Component {
     }
   }
 
+  async getPostal (event) {
+    event.preventDefault();
+    let data = await this.callPostal()
+    console.log(data['ADDRESS'])
+    this.setState({street:data['ADDRESS'],
+                  longitude:data['LONGITUDE'],
+                  latitude:data['LATITUDE']
+                })
+  }
+
+  callPostal = () =>{
+    return fetch('https://developers.onemap.sg/commonapi/search?searchVal='+this.state.postal+'&returnGeom=Y&getAddrDetails=Y').then(function(response) {
+      return response.json();
+    }).then(function(jsonResponse) {
+      // console.log(jsonResponse['results'])
+      return jsonResponse['results'][0]
+      //Success message
+    },(error)=>{
+      console.log(error)
+    })
+  }
+
   handleSubmit = (event) => {
-    alert('A name was submitted: ' + this.state.street);
     addData(
       this.state.postal,
       this.state.street,
@@ -65,6 +89,7 @@ export class Create extends React.Component {
       this.state.longitude
       )
     event.preventDefault();
+    this.props.history.push('/listing')
   }
 
   handleChange = (event) => {
@@ -84,7 +109,7 @@ export class Create extends React.Component {
 
   handleFireBaseUpload = (image) => {
     // event.preventDefault()
-    alert('start of upload')
+    // alert('start of upload')
     var date = new Date();
     var timestamp = date.getTime();
     var newName = timestamp+"_"+image.name
@@ -136,8 +161,12 @@ export class Create extends React.Component {
                   <h6 class="card-subtitle mb-2 text-muted">Please enter more details regarding your property listing. </h6>
                   <div class="form-group">
                     <label for="postalcode">Postal Code</label>
-                    <input onChange={this.handleChange} value={this.state.postal} type="number" class="form-control" name="postal" placeholder="Enter Postal Code"></input>
-                    {/* <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> */}
+                    <div class="input-group">
+                      <input onChange={this.handleChange} value={this.state.postal} type="number" class="form-control" name="postal" placeholder="Enter Postal Code"></input>
+                      <div class="input-group-append">
+                        <input type="button" value="Search" onClick={this.getPostal.bind(this)} class="btn btn-primary"/>
+                      </div>
+                    </div>
                   </div>
                   <div class="form-group">
                     <label for="street">Street Name</label>
@@ -181,4 +210,4 @@ export class Create extends React.Component {
   }
 }
 
-export default Create
+export default withRouter(Create)

@@ -23,6 +23,8 @@ const apiIsLoaded = (map, maps, places) => {
   const bounds = getMapBounds(map, maps, places);
   if (bounds){
     map.fitBounds(bounds);
+    var zoom = map.getZoom();
+    map.setZoom(zoom > 16 ? 16 : zoom);
   }
 };
 
@@ -66,6 +68,7 @@ export class Maps extends React.Component {
     let data = []
     fireData.forEach(function(doc){
       if (doc.exists){
+        console.log(doc.data())
         data.push(doc.data())
       }
     });
