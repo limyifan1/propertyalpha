@@ -5,7 +5,7 @@ export class Item extends React.Component {
     super(props);
   }
 
-  render() {      
+  render() {     
       return (
         <div>
             <div class="item mb-3" style={{"max-width": "50%", "min-height":"100", "max-height": "260px"}}>
@@ -16,7 +16,7 @@ export class Item extends React.Component {
                     <div class="col-md-8" style={{"padding-top":"0px"}}>
                         <div style={{"padding-left":"15px"}} >
                             <h5 class="card-title">{this.props.street}</h5>
-                            <p class="card-text font-weight-bold">{this.props.price}</p>
+                            <p class="card-text font-weight-bold">${this.props.price}</p>
                             <p class="card-text"><small>{this.props.summary}</small></p>
                         </div>
                     </div>

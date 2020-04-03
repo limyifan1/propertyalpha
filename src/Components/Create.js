@@ -1,26 +1,28 @@
-import React, {useState} from 'react';
+import React from 'react';
 import '../App.css';
-import {db, storage, firebase} from './Firestore'
+import {db, storage} from './Firestore'
 import GoogleMap from 'google-map-react';
 import Component from '../Components'
 
 const API_KEY = `${process.env.REACT_APP_GKEY}`
 
-const addData = (postal,street,price,description,url) => {
+const addData = (postal,street,price,description,url,latitude,longitude) => {
   db.collection("properties").add({
     postal: postal,
     street: street,
     price: price,
     description: description,
     url: url,
+    latitude: latitude,
+    longitude: longitude
   })
   .then(function(docRef) {
       console.log("Document written with ID: ", docRef.id);
-      // alert("Sent")
+      alert("Sent")
   })
   .catch(function(error) {
       console.error("Error adding document: ", error);
-      // alert("Failed")
+      alert("Failed")
   });
 }
 
@@ -35,10 +37,10 @@ export class Create extends React.Component {
       description:'',
       url:'',
       imageFile: '',
-      imageName: 'Upload Image'
+      imageName: 'Upload Image',
+      longitude: -122.3710252,
+      latitude: 47.63628904
     };
-    // this.handleSubmit = this.handleSubmit(this);
-    // this.handleChange = this.handleChange(this);
   }
 
   apiHasLoaded(map, maps){
@@ -52,14 +54,15 @@ export class Create extends React.Component {
   }
 
   handleSubmit = (event) => {
-    // alert('A name was submitted: ' + this.state.street);
-    console.log(this.state.street);
+    alert('A name was submitted: ' + this.state.street);
     addData(
       this.state.postal,
       this.state.street,
       this.state.price,
       this.state.description,
       this.state.url,
+      this.state.latitude,
+      this.state.longitude
       )
     event.preventDefault();
   }
@@ -84,7 +87,8 @@ export class Create extends React.Component {
     alert('start of upload')
     var date = new Date();
     var timestamp = date.getTime();
-    const uploadTask = storage.ref(`/images/${timestamp+"_"+image.name}`).put(image)
+    var newName = timestamp+"_"+image.name
+    const uploadTask = storage.ref(`/images/${newName}`).put(image)
     uploadTask.on('state_changed', 
     (snapShot) => {
       //takes a snap shot of the process as it is happening
@@ -95,7 +99,7 @@ export class Create extends React.Component {
     }, () => {
       // gets the functions from storage refences the image storage in firebase by the children
       // gets the download url then sets the image from firebase as the value for the imgUrl key:
-      storage.ref('images').child(this.state.imageFile.name).getDownloadURL()
+      storage.ref('images').child(newName).getDownloadURL()
        .then(fireBaseUrl => {
          this.setState({url: fireBaseUrl})
        })

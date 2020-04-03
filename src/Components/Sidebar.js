@@ -7,27 +7,51 @@ export class Sidebar extends React.Component {
     super(props);
 
     this.state = {
-        data: []
+        listing: []
     };
+
+  }
+
+  loadData = ()=>{
+    let result = [];
+    console.log("Sidebar:",this.props.data.data)
+    if (this.props.data.data){
+      console.log("yes")
+      this.props.data.data.forEach(function(data) {
+        result.push(
+        <div>
+          <Item 
+            street={data['street']}
+            pic={data['url']}
+            price={data['price']}
+            summary={data['description']}
+          />
+        </div>
+        )
+      });
+    }
+    return result
   }
 
   render() {
-    let result;
-    if (this.props.data.data.length !== 0){
-      result = this.props.data.data.map(data => {
-        return (
-          <div>
-            <Item 
-              street={data['street']}
-              pic={data['picture_url']}
-              price={data['price']}
-              summary={data['summary']}
-            />
-          </div>
+    let result = []
+    if (this.props.data.data){
+      console.log("yes")
+      this.props.data.data.forEach(function(data) {
+        console.log(data['url'])
+        result.push(
+        <div>
+          <Item 
+            street={data['street']}
+            pic={data['url']}
+            price={data['price']}
+            summary={data['description']}
+          />
+        </div>
         )
-      })
+      });
     }
-
+    
     return (
       <div>
         <div style={{"padding-top":"56px", width:"100%"}}>

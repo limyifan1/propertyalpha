@@ -15,6 +15,7 @@ export class Listing extends React.Component {
 
   getData(val){
     this.setState({data:val})
+    console.log(val)
   }
 
   render() {

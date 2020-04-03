@@ -4,15 +4,17 @@ import GoogleMap from 'google-map-react';
 import Marker from './Marker'
 import Papa from 'papaparse';
 import file from '../listings_cropped.csv'
+import {db, storage} from './Firestore'
 
 const API_KEY = `${process.env.REACT_APP_GKEY}`
 
 const getMapBounds = (map, maps, places) => {
   const bounds = new maps.LatLngBounds();
   if (places !== undefined && places.data.length!==0) {
-    places.data.forEach(element => {
-      bounds.extend({lat: parseFloat(element.latitude), lng:parseFloat(element.longitude)})
-    })
+    places.data.forEach(function(data) {
+      bounds.extend({lat: parseFloat(data.latitude), lng:parseFloat(data.longitude)})
+      }
+    )
     return bounds
   }
 };
@@ -34,7 +36,15 @@ export class Maps extends React.Component {
   }
 
   componentWillMount() {
-    this.getCsvData();
+    this.getFirestoreData();
+  }
+
+  retrieveData = () => {
+    return db.collection("properties").get().then(function(querySnapshot) {
+      return querySnapshot
+    }).catch(function(error) {
+      console.log("Error getting document:", error);
+    });
   }
 
   fetchCsv() {
@@ -47,8 +57,26 @@ export class Maps extends React.Component {
       });
   }
 
+  async getFirestoreData() {
+    let fireData = await this.retrieveData();
+    // fireData.forEach(function(doc) {
+    //       // doc.data() is never undefined for query doc snapshots
+    //       console.log(doc.id, " => ", doc.data());
+    //   });
+    let data = []
+    fireData.forEach(function(doc){
+      if (doc.exists){
+        data.push(doc.data())
+      }
+    });
+    console.log(data)
+    this.setState({data:data})
+    this.props.sendData(data)
+  }
+
   async getCsvData() {
     let csvData = await this.fetchCsv();
+    // let fireData = await gData();
     Papa.parse(csvData, {
       header: true, 
       complete: this.getData
@@ -79,24 +107,25 @@ export class Maps extends React.Component {
   }
 
   render() {
-    let renderMarkers
     let count = -1
-    if (this.state.data.length!==0){
-      renderMarkers = this.state.data.map(place =>{
+    let result = [];
+
+    if (this.state.data){
+      this.state.data.forEach(function(data) {
         count += 1
-        return <Marker 
-                  key={count}
-                  text={place.name}
-                  pic={place.picture_url}
-                  street={place.street}
-                  price={place.price}
-                  lat = {place.latitude}
-                  lng = {place.longitude}
-                  show = {place.show}
-                />
-      })
+        result.push(
+          <Marker 
+            key={count}
+            text={data.street}
+            pic={data.url}
+            street={data.street}
+            price={data.price}
+            lat = {parseFloat(data.latitude)}
+            lng = {parseFloat(data.longitude)}
+            show = {data.show}
+          />)
+      });
     }
-    
     return (
         <div className="map-container">
           {this.state.data.length!==0 ?
@@ -109,7 +138,7 @@ export class Maps extends React.Component {
           yesIWantToUseGoogleMapApiInternals
           onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps, this.state)}
           >
-            {renderMarkers}
+            {result}
           </GoogleMap>
           : null
         }
