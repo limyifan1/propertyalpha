@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import '../App.css';
 import {db, storage, firebase} from './Firestore'
 import GoogleMap from 'google-map-react';
@@ -6,12 +6,13 @@ import Component from '../Components'
 
 const API_KEY = `${process.env.REACT_APP_GKEY}`
 
-const addData = (postal,street,price,description) => {
+const addData = (postal,street,price,description,url) => {
   db.collection("properties").add({
     postal: postal,
     street: street,
     price: price,
-    description: description
+    description: description,
+    url: url,
   })
   .then(function(docRef) {
       console.log("Document written with ID: ", docRef.id);
@@ -32,6 +33,9 @@ export class Create extends React.Component {
       street: '',
       price: 0,
       description:'',
+      url:'',
+      imageFile: '',
+      imageName: 'Upload Image'
     };
     // this.handleSubmit = this.handleSubmit(this);
     // this.handleChange = this.handleChange(this);
@@ -48,13 +52,14 @@ export class Create extends React.Component {
   }
 
   handleSubmit = (event) => {
-    alert('A name was submitted: ' + this.state.street);
-    // console.log(this.state.street);
+    // alert('A name was submitted: ' + this.state.street);
+    console.log(this.state.street);
     addData(
       this.state.postal,
       this.state.street,
       this.state.price,
       this.state.description,
+      this.state.url,
       )
     event.preventDefault();
   }
@@ -66,29 +71,61 @@ export class Create extends React.Component {
     this.setState({[name]: value});
   }
 
+  handleImageAsFile = (event) => {
+    event.preventDefault()
+    const image = event.target.files[0]
+    this.setState({imageFile: image})
+    this.setState({imageName: image.name})
+    this.handleFireBaseUpload(image)
+  }
+
+  handleFireBaseUpload = (image) => {
+    // event.preventDefault()
+    alert('start of upload')
+    var date = new Date();
+    var timestamp = date.getTime();
+    const uploadTask = storage.ref(`/images/${timestamp+"_"+image.name}`).put(image)
+    uploadTask.on('state_changed', 
+    (snapShot) => {
+      //takes a snap shot of the process as it is happening
+      console.log(snapShot)
+    }, (err) => {
+      //catches the errors
+      console.log(err)
+    }, () => {
+      // gets the functions from storage refences the image storage in firebase by the children
+      // gets the download url then sets the image from firebase as the value for the imgUrl key:
+      storage.ref('images').child(this.state.imageFile.name).getDownloadURL()
+       .then(fireBaseUrl => {
+         this.setState({url: fireBaseUrl})
+       })
+    })
+  }  
+
   render({ apiReady, maps, map } = this.state) {
     return (
       <div class="container" style={{"padding-top":"70px"}}>
         <h3>Create Property Listing</h3>
-        {this.state.street}
         <div class="row">
           <div class="col">
-            <div class="card shadow" style={{"width": "100%"}}>
+            <div class="card shadow" style={{"width": "100%", "margin-top": "10px"}}>
               <div class="card-body">
                 <h5 class="card-title">Upload Images</h5>
-                <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <form>
-                  <div class="custom-file">
+                <h6 class="card-subtitle mb-2 text-muted">Upload images of your listed property below</h6>
+                <p class="card-text">Listings with images are much more likely to get leads. </p>
+                {this.state.url?<img src={this.state.url} style={{'width':'100px'}}></img>:null}
+                <form onSubmit={this.handleFireBaseUpload}>
+                  <div class="custom-file" onChange={this.handleImageAsFile} style={{"margin-top": "10px"}}>
                     <input type="file" class="custom-file-input" id="customFile"></input>
-                    <label class="custom-file-label" for="customFile">Choose file</label>
+                    <label class="custom-file-label" for="customFile">{this.state.imageName}</label>
                   </div>
+                  {/* <input type="submit" value="Upload" class="btn btn-primary" style={{"margin-top": "10px"}}/> */}
                 </form>
               </div>
             </div>
           </div>
           <div class="col-sm-8">
-            <div class="card shadow" style={{"width": "100%"}}>
+            <div class="card shadow" style={{"width": "100%", "margin-top": "10px"}}>
               <form onSubmit={this.handleSubmit}>
                 <div class="card-body">
                   <h5 class="card-title">Property Details</h5>
