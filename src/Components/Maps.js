@@ -69,7 +69,6 @@ export class Maps extends React.Component {
     let data = []
     fireData.forEach(function(doc){
       if (doc.exists){
-        console.log(doc.data())
         data.push(doc.data())
       }
     });
