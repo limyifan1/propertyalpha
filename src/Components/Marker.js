@@ -5,7 +5,7 @@ import '../App.css';
 const InfoWindow = (props) => {
   return (
     <div>
-      <div class="card" style={{"width":"250px", "bottom":"140px", "z-index":"1000"}}>
+      <div class="card" style={{"width":"250px", "bottom":"155px", "z-index":"1000"}}>
         <div class="row no-gutters">
             <div class="col-md-4">
                 <img src={props.pic} class="rounded float-left card-img-top"
@@ -39,7 +39,8 @@ export class Marker extends React.Component {
   render() {
     return (
         <div>
-          <div class="pin1"></div>
+          {!this.props.show && <div class="pinDefault"></div>}
+          {this.props.show && <div class="pinMouseOver"></div>}
           <div>
             {this.props.show && <InfoWindow {...this.props}/>}
           </div>

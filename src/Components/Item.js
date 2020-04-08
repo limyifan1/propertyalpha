@@ -11,7 +11,10 @@ export class Item extends React.Component {
             <div class="item mb-3" style={{"max-width": "50%", "min-height":"100", "max-height": "260px"}}>
                 <div class="row no-gutters">
                     <div class="col-md-4">
-                        <img src={this.props.pic} class="card-img card-img-top" style={{"max-height":"220px"}}></img>
+                      {
+                        <img src={this.props.pic} class="card-img card-img-top" style={{"max-height":"220px"}}/>
+                      }
+                        
                     </div>
                     <div class="col-md-8" style={{"padding-top":"0px"}}>
                         <div style={{"padding-left":"15px"}} >

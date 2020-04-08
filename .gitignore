@@ -27,3 +27,5 @@ yarn-debug.log*
 yarn-error.log*
 /.vscode
 /.firebase
+/src/Components/addFirestore.js
+/src/mrt_stations.json

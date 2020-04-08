@@ -36,7 +36,6 @@ export class Sidebar extends React.Component {
   render() {
     let result = []
     if (this.props.data.data){
-      console.log("yes")
       this.props.data.data.forEach(function(data) {
         console.log(data['url'])
         result.push(

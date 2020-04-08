@@ -1,5 +1,6 @@
 import React, {PropTypes} from 'react';
 import './App.css';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import Components from './Components'
 

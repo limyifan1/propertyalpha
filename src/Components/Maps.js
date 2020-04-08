@@ -5,6 +5,7 @@ import Marker from './Marker'
 import Papa from 'papaparse';
 import file from '../listings_cropped.csv'
 import {db, storage} from './Firestore'
+import {Spinner} from 'react-bootstrap'
 
 const API_KEY = `${process.env.REACT_APP_GKEY}`
 
@@ -143,8 +144,14 @@ export class Maps extends React.Component {
           >
             {result}
           </GoogleMap>
-          : null
+          :
+          <div class="row h-100">
+            <div class="col-sm-12 my-auto">
+              <Spinner class="" animation="grow" />
+            </div>
+          </div>
         }
+          
         </div>
     );
   }

@@ -7,6 +7,7 @@ import Maps from './Maps'
 import Marker from './Marker'
 import Create from './Create'
 import SearchBox from './SearchBox'
+import Search from './Search'
 import {db, storage} from './Firestore'
 
-export default {Home, Menu, Listing, Sidebar, Item, Maps, Marker, Create, SearchBox, db, storage}
+export default {Home, Menu, Listing, Sidebar, Item, Maps, Marker, Create, SearchBox, Search, db, storage}
