@@ -42,48 +42,32 @@ export class Maps extends React.Component {
     this.getFirestoreData();
   }
 
-  retrieveData = () => {
-    return db.collection("properties").get().then(function(querySnapshot) {
-      return querySnapshot
-    }).catch(function(error) {
-      console.log("Error getting document:", error);
-    });
-  }
+  // retrieveData = () => {
+  //   return db.collection("properties").get().then(function(querySnapshot) {
+  //     return querySnapshot
+  //   }).catch(function(error) {
+  //     console.log("Error getting document:", error);
+  //   });
+  // }
 
-  fetchCsv() {
-      return fetch(file).then(function (response) {
-          let reader = response.body.getReader();
-          let decoder = new TextDecoder('utf-8');
-          return reader.read().then(function (result) {
-              return decoder.decode(result.value);
-          });
-      });
+  retrieveData = () => {
+    return fetch('https://us-central1-propertyalpha-1428b.cloudfunctions.net/search').then((response)=>{
+        return response.json()
+      }
+    ).catch((error)=>{
+      return error
+    })
   }
 
   async getFirestoreData() {
     let fireData = await this.retrieveData();
-    // fireData.forEach(function(doc) {
-    //       // doc.data() is never undefined for query doc snapshots
-    //       console.log(doc.id, " => ", doc.data());
-    //   });
     let data = []
     fireData.forEach(function(doc){
-      if (doc.exists){
-        data.push(doc.data())
-      }
+        data.push(doc)
     });
-    console.log(data)
+    // console.log(data)
     this.setState({data:data})
     this.props.sendData(data)
-  }
-
-  async getCsvData() {
-    let csvData = await this.fetchCsv();
-    // let fireData = await gData();
-    Papa.parse(csvData, {
-      header: true, 
-      complete: this.getData
-    });
   }
 
   getData(result) {

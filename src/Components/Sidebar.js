@@ -14,9 +14,8 @@ export class Sidebar extends React.Component {
 
   loadData = ()=>{
     let result = [];
-    console.log("Sidebar:",this.props.data.data)
+    // console.log("Sidebar:",this.props.data.data)
     if (this.props.data.data){
-      console.log("yes")
       this.props.data.data.forEach(function(data) {
         result.push(
         <div>
@@ -37,7 +36,7 @@ export class Sidebar extends React.Component {
     let result = []
     if (this.props.data.data){
       this.props.data.data.forEach(function(data) {
-        console.log(data['url'])
+        // console.log(data['url'])
         result.push(
         <div>
           <Item 
@@ -53,7 +52,7 @@ export class Sidebar extends React.Component {
     
     return (
       <div>
-        <div style={{"padding-top":"56px", width:"100%"}}>
+        <div style={{"paddingTop":"56px", width:"100%"}}>
           {result}
         </div>
       </div>
