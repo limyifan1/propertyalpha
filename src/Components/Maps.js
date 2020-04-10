@@ -6,6 +6,8 @@ import Papa from 'papaparse';
 import file from '../listings_cropped.csv'
 import {db, storage} from './Firestore'
 import {Spinner} from 'react-bootstrap'
+import {withRouter} from 'react-router-dom';
+import queryString from 'query-string';
 
 const API_KEY = `${process.env.REACT_APP_GKEY}`
 
@@ -34,7 +36,11 @@ export class Maps extends React.Component {
     super(props);
     this.state = {
       data: [],
+      query: queryString.parse(this.props.location.search).query,
+      longitude: queryString.parse(this.props.location.search).lon,
+      latitude: queryString.parse(this.props.location.search).lat,
     };
+    // const values = queryString.parse(this.props.location.search)
     this.getData = this.getData.bind(this);
   }
 
@@ -42,17 +48,31 @@ export class Maps extends React.Component {
     this.getFirestoreData();
   }
 
-  // retrieveData = () => {
-  //   return db.collection("properties").get().then(function(querySnapshot) {
-  //     return querySnapshot
-  //   }).catch(function(error) {
-  //     console.log("Error getting document:", error);
-  //   });
-  // }
+  componentDidMount(){
+  }
 
   retrieveData = () => {
-    return fetch('https://us-central1-propertyalpha-1428b.cloudfunctions.net/search').then((response)=>{
-        return response.json()
+    let string = {
+      longitude:this.state.longitude,
+      latitude:this.state.latitude,
+      query:this.state.query
+    }
+    console.log(string)
+    return fetch('https://us-central1-propertyalpha-1428b.cloudfunctions.net/search',
+    {
+      method: 'POST',
+      mode: 'cors', 
+      // cache: 'no-cache', 
+      // credentials: 'same-origin', 
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      // redirect: 'follow', 
+      // referrerPolicy: 'no-referrer', 
+      body: JSON.stringify(string)
+    }
+    ).then((response)=>{
+      return response.json()
       }
     ).catch((error)=>{
       return error
@@ -140,4 +160,4 @@ export class Maps extends React.Component {
   }
 }
 
-export default Maps
+export default withRouter(Maps)

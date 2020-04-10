@@ -4,7 +4,9 @@ import {Typeahead} from 'react-bootstrap-typeahead';
 import {InputGroup, Button, FormControl} from 'react-bootstrap'
 import {db} from './Firestore'
 import logo from '../mrt_logo.png';
-
+import {
+	withRouter
+} from 'react-router-dom';
 
 function titleCase(str) {
   var splitStr = str.toLowerCase().split(' ');
@@ -53,12 +55,14 @@ export class Search extends React.Component {
     this.setState({data:data})
   }
 
-  retrieveData = () => {
-    return db.collection("mrt").get().then(function(querySnapshot) {
-      return querySnapshot
-    }).catch(function(error) {
+  retrieveData = async () => {
+    try {
+      const querySnapshot = await db.collection("mrt").get();
+      return querySnapshot;
+    }
+    catch (error) {
       console.log("Error getting document:", error);
-    });
+    }
   }
 
   _renderMenuItemChildren = (option,props,index) => {
@@ -95,6 +99,16 @@ export class Search extends React.Component {
     </Fragment>)
   }
 
+  handleClick = (event) => {
+    event.preventDefault();
+    this.props.history.push({
+      pathname: '/listing',
+      search: '?query='+this.state.selected[0].name+'&lon='+this.state.selected[0].coords[0]+'&lat='+this.state.selected[0].coords[1],
+      // state: { detail: response.data }
+    })
+    // this.props.history.push('/listing')
+  }
+
   handleSubmit = (event) => {
     event.preventDefault();
     alert("You selected: "+this.state.selected[0].name)
@@ -112,7 +126,7 @@ export class Search extends React.Component {
                   {this.searchBox()}
                 </div>
                 <InputGroup.Append style={{"width":"20%"}}>
-                  <Button type="submit" variant="outline-secondary">Search</Button>
+                  <Button type="submit" variant="outline-secondary" onClick={this.handleClick}>Search</Button>
                 </InputGroup.Append>
               </InputGroup>
             </div>
@@ -125,4 +139,4 @@ export class Search extends React.Component {
   }
 }
 
-  export default Search
+  export default withRouter(Search)
