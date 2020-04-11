@@ -5,8 +5,8 @@ import {Button, Navbar, Nav, NavDropdown, NavItem} from 'react-bootstrap';
 export class Menu extends React.Component {
     render() {
       return (
-        <Navbar bg="dark" expand="lg" variant="dark" style={{position:"fixed",width:"100%","zIndex":"9999"}}>
-          <Navbar.Brand as={Link} to="/">PropertyAlpha</Navbar.Brand>
+        <Navbar bg="light" expand="lg" variant="light" style={{position:"fixed",width:"100%","zIndex":"9999"}}>
+          <Navbar.Brand as={Link} to="/" style={{"color":"#B22222"}}>PropertyAlpha</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">

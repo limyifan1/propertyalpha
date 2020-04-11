@@ -125,11 +125,11 @@ export class Search extends React.Component {
             </div>
             <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
               <InputGroup className="">
-                <div style={{"width":"80%"}}>
+                <div class="shadow-lg" style={{"width":"80%"}}>
                   {this.searchBox()}
                 </div>
                 <InputGroup.Append style={{"width":"20%"}}>
-                  <Button type="submit" variant="outline-secondary" onClick={this.handleClick}>Search</Button>
+                  <Button class="shadow-sm" type="submit" variant="outline-secondary" onClick={this.handleClick}>Search</Button>
                 </InputGroup.Append>
               </InputGroup>
             </div>

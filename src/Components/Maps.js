@@ -111,12 +111,15 @@ export class Maps extends React.Component {
   }
 
   mapRender(result) {
+    let latitude = this.props.data.latitude ? parseFloat(this.props.data.latitude) : 1.2830
+    let longitude = this.props.data.longitude ? parseFloat(this.props.data.longitude) : 103.8579
+    let zoom = this.props.data.longitude ? 16 : 12
     if (this.props.data.data.length > 0){      
       return (
         <GoogleMap
         bootstrapURLKeys={{ key: API_KEY}}
-        defaultCenter={[parseFloat(this.props.data.latitude),parseFloat(this.props.data.longitude)]}
-        defaultZoom={16}
+        defaultCenter={[latitude,longitude]}
+        defaultZoom={zoom}
         onChildMouseEnter={this._onChildMouseEnter.bind(this)}
         onChildMouseLeave={this._onChildMouseLeave.bind(this)}
         yesIWantToUseGoogleMapApiInternals
@@ -129,8 +132,8 @@ export class Maps extends React.Component {
       return(
         <GoogleMap
         bootstrapURLKeys={{ key: API_KEY}}
-        defaultCenter={[1.3521,103.8198]}
-        defaultZoom={12}
+        defaultCenter={[latitude,longitude]}
+        defaultZoom={zoom}
         >
         </GoogleMap>
       )
