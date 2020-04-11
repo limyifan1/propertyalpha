@@ -36,47 +36,44 @@ export class Maps extends React.Component {
     super(props);
     this.state = {
       data: [],
-      query: queryString.parse(this.props.location.search).query,
-      longitude: queryString.parse(this.props.location.search).lon,
-      latitude: queryString.parse(this.props.location.search).lat,
+      // query: queryString.parse(this.props.location.search).query,
+      // longitude: queryString.parse(this.props.location.search).lon,
+      // latitude: queryString.parse(this.props.location.search).lat,
+      // distance: queryString.parse(this.props.location.search).distance,
+      // retrieved: false
     };
     // const values = queryString.parse(this.props.location.search)
-    this.getData = this.getData.bind(this);
+    // this.getData = this.getData.bind(this);
   }
 
   componentWillMount() {
-    this.getFirestoreData();
+    // this.getFirestoreData();
   }
 
   componentDidMount(){
   }
 
-  retrieveData = () => {
+  retrieveData = async () => {
     let string = {
       longitude:this.state.longitude,
       latitude:this.state.latitude,
-      query:this.state.query
+      query:this.state.query,
+      distance:this.state.distance
     }
-    console.log(string)
-    return fetch('https://us-central1-propertyalpha-1428b.cloudfunctions.net/search',
-    {
-      method: 'POST',
-      mode: 'cors', 
-      // cache: 'no-cache', 
-      // credentials: 'same-origin', 
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      // redirect: 'follow', 
-      // referrerPolicy: 'no-referrer', 
-      body: JSON.stringify(string)
+    try {
+      const response = await fetch('https://us-central1-propertyalpha-1428b.cloudfunctions.net/search', {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(string)
+      });
+      return response.json();
     }
-    ).then((response)=>{
-      return response.json()
-      }
-    ).catch((error)=>{
-      return error
-    })
+    catch (error) {
+      return error;
+    }
   }
 
   async getFirestoreData() {
@@ -85,8 +82,8 @@ export class Maps extends React.Component {
     fireData.forEach(function(doc){
         data.push(doc)
     });
-    // console.log(data)
     this.setState({data:data})
+    this.setState({retrieved:true})
     this.props.sendData(data)
   }
 
@@ -97,8 +94,8 @@ export class Maps extends React.Component {
 
   _onChildMouseEnter = function(hoverKey){
     let index = parseInt(hoverKey)
-    if (this.state.data.length!==0){
-      let data = this.state.data
+    if (this.props.data.data.length!==0){
+      let data = this.props.data.data
       data[index].show = true
       this.setState({data:data})
     }
@@ -106,10 +103,37 @@ export class Maps extends React.Component {
 
   _onChildMouseLeave = function(hoverKey){
     let index = parseInt(hoverKey)
-    if (this.state.data.length!==0){
-      let data = this.state.data
+    if (this.props.data.data.length!==0){
+      let data = this.props.data.data
       data[index].show = false
       this.setState({data:data})
+    }
+  }
+
+  mapRender(result) {
+    if (this.props.data.data.length > 0){      
+      return (
+        <GoogleMap
+        bootstrapURLKeys={{ key: API_KEY}}
+        defaultCenter={[parseFloat(this.props.data.latitude),parseFloat(this.props.data.longitude)]}
+        defaultZoom={16}
+        onChildMouseEnter={this._onChildMouseEnter.bind(this)}
+        onChildMouseLeave={this._onChildMouseLeave.bind(this)}
+        yesIWantToUseGoogleMapApiInternals
+        // onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps, this.state)}
+        >
+          {result}
+        </GoogleMap>)
+    }
+    else{
+      return(
+        <GoogleMap
+        bootstrapURLKeys={{ key: API_KEY}}
+        defaultCenter={[1.3521,103.8198]}
+        defaultZoom={12}
+        >
+        </GoogleMap>
+      )
     }
   }
 
@@ -117,8 +141,8 @@ export class Maps extends React.Component {
     let count = -1
     let result = [];
 
-    if (this.state.data){
-      this.state.data.forEach(function(data) {
+    if (this.props.data.data){
+      this.props.data.data.forEach(function(data) {
         count += 1
         result.push(
           <Marker 
@@ -133,28 +157,12 @@ export class Maps extends React.Component {
           />)
       });
     }
+
     return (
         <div className="map-container">
-          {this.state.data.length!==0 ?
-          <GoogleMap
-          bootstrapURLKeys={{ key: API_KEY}}
-          defaultCenter={[47.63628904, -122.3710252]}
-          defaultZoom={9}
-          onChildMouseEnter={this._onChildMouseEnter.bind(this)}
-          onChildMouseLeave={this._onChildMouseLeave.bind(this)}
-          yesIWantToUseGoogleMapApiInternals
-          onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps, this.state)}
-          >
-            {result}
-          </GoogleMap>
-          :
-          <div class="row h-100">
-            <div class="col-sm-12 my-auto">
-              <Spinner class="" animation="grow" />
-            </div>
-          </div>
-        }
-          
+          { 
+            this.mapRender(result)
+          }
         </div>
     );
   }

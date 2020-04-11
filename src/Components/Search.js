@@ -103,7 +103,10 @@ export class Search extends React.Component {
     event.preventDefault();
     this.props.history.push({
       pathname: '/listing',
-      search: '?query='+this.state.selected[0].name+'&lon='+this.state.selected[0].coords[0]+'&lat='+this.state.selected[0].coords[1],
+      search: '?query='+this.state.selected[0].name
+      +'&lon='+this.state.selected[0].coords[0]
+      +'&lat='+this.state.selected[0].coords[1]
+      +'&distance=1',
       // state: { detail: response.data }
     })
     // this.props.history.push('/listing')

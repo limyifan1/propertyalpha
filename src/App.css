@@ -6,14 +6,21 @@
   right: 0;
 }
 
-.search-container {
+.page-container {
   top: 56px;
-  width: 60%;
+  width: 50%;
   height: calc(100% - 58px);
   position: fixed;
-  right: 20%;
 }
 
+
+.search-container {
+  top: 56px;
+  width: 50%;
+  height: calc(100% - 58px);
+  position: fixed;
+  right: 50%;
+}
 
 .info {
   border: 1px solid grey;
